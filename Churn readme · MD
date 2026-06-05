@@ -1,0 +1,80 @@
+# 📉 Banking Customer Churn Analysis
+
+**Tools:** Python · SQL (SQLite/PostgreSQL syntax) · Pandas · Scikit-learn · Matplotlib · Seaborn
+
+## Overview
+End-to-end churn analysis on 10,000 bank customers — covering exploratory data analysis, SQL-based segmentation, feature engineering, and ML model building. The goal: identify which customers are most likely to churn and translate model outputs into actionable product recommendations.
+
+## Key Findings
+
+| Insight | Finding |
+|---|---|
+| Overall churn rate | 25.1% |
+| Highest churn geography | Germany (30.1%) |
+| Highest churn segment | 3–4 products + inactive (41%+) |
+| Lowest churn segment | Active members, 1 product (15.2%) |
+| Age group most at risk | 50–59 years (36% churn rate) |
+| Best ML model | Logistic Regression (AUC: 0.631) |
+| Top churn driver | Account inactivity + low engagement |
+
+## High-Risk Segment Identified
+
+```
+Inactive members with 3+ products → 41.1% churn rate
+Inactive members with 1 product   → 30.7% churn rate
+Active members with 2+ products   → 19.2% churn rate   ← healthiest segment
+```
+
+## SQL Techniques Used
+- `CASE WHEN` for age buckets and segment creation
+- `GROUP BY` with multi-metric aggregations
+- Subqueries for percentage calculations
+- Churned vs retained comparison using conditional `AVG()`
+- Risk segmentation using `IsActiveMember` + `NumOfProducts` combinations
+
+## ML Models Built
+
+| Model | Accuracy | AUC |
+|---|---|---|
+| Logistic Regression | 74.9% | 0.631 |
+| Random Forest | 74.1% | 0.608 |
+
+**Top features by importance (Random Forest):**
+1. EstimatedSalary
+2. CreditScore
+3. Balance
+4. Age
+5. Tenure
+6. NumOfProducts
+
+## Product Recommendations (from data)
+1. **Re-engagement campaign** — Target inactive members (IsActiveMember=0) with personalised push notifications and offers; they churn at 2× the rate of active members
+2. **Germany market** — 30.1% churn vs 23% elsewhere; investigate local competitor offerings or service gaps
+3. **Age 50+ retention** — Highest churn age group; consider dedicated relationship manager or simplified UX for older users
+4. **Product simplification** — Customers with 3–4 products churn more, suggesting product overload; consider consolidation or better cross-product UX
+
+## Files
+```
+churn-analysis/
+├── generate_data.py        # Generates 10,000 realistic customer records
+├── analysis.py             # EDA + SQL segmentation + ML models + visualisations
+├── bank_churn.csv          # Generated dataset
+└── outputs/
+    └── churn_dashboard.png
+```
+
+## Dashboard Preview
+![Churn Analysis Dashboard](outputs/churn_dashboard.png)
+
+## How to Run
+```bash
+pip install pandas matplotlib seaborn scikit-learn numpy
+python generate_data.py
+python analysis.py
+```
+
+## What I Learned
+- How to identify high-risk customer segments using SQL segmentation
+- Feature engineering — creating tenure buckets, activity flags, product overlap scores
+- Difference between accuracy and AUC as evaluation metrics (AUC matters more for imbalanced churn data)
+- How to write a plain-language product brief from ML model outputs — the last mile that separates data work from product impact
